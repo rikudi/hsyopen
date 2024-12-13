@@ -1,7 +1,4 @@
- export const Header = (props) => {
-    return (
-        <div>
-            <h1>{props.title}</h1>
-        </div>
-    )
+export const Header = (props) => {
+    console.log(props)
+    return <h1>{props.course}</h1>
 }
