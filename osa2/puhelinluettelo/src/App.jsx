@@ -3,11 +3,14 @@ import Numbers from './components/Numbers'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import personService from './services/persons'
+import Notification from './components/Notification' // Import Notification component
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [filterText, setFilterText] = useState('')
+  const [notification, setNotification] = useState(null) // Add notification state
 
   // The useEffect hook is used to fetch the initial data from the server when the component is rendered for the first time.
   useEffect(() => {
@@ -45,11 +48,11 @@ const handleDelete = (id) => {
         .then(response => {
           console.log('person deleted:', response)
           setPersons(persons.filter(person => person.id !== id))
-          alert(`Deleted ${person.name}`)
+          showNotification(`Deleted ${person.name}`, 'error') // Use 'error' type for deletion
         })
         .catch(error => {
           console.error('Error deleting person:', error)
-          alert('Failed to delete person from server')
+          showNotification('Person already deleted from the server', 'error')
         })
     }
   }
@@ -80,10 +83,11 @@ const handleDelete = (id) => {
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNum('')
+        showNotification(`Added ${personObject.name}`, 'success')
       })
       .catch(error => {
         console.error('Error adding person:', error)
-        alert('Failed to add person to server')
+        showNotification('Failed to add person to server', 'error')
       })
   }
 
@@ -96,12 +100,20 @@ const handleDelete = (id) => {
         ))
         setNewName('')
         setNewNum('')
+        showNotification(`Updated ${newPerson.name}`, 'success')
       })
       .catch(error => {
         console.error('Error updating person:', error)
-        alert(`Information of ${newPerson.name} has already been removed from server`)
+        showNotification(`Information of ${newPerson.name} has already been removed from server`, 'error')
         setPersons(persons.filter(person => person.id !== id))
       })
+  }
+
+  const showNotification = (message, type) => {
+    setNotification({ message, type })
+    setTimeout(() => {
+      setNotification(null)
+    }, type === 'success' ? 2000 : 5000) // 2 seconds for success, 5 seconds for error
   }
 
 
@@ -115,6 +127,7 @@ const handleDelete = (id) => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification notification={notification} />
       <Filter handleFilterChange={handleFilterChange} />
       <h2>Add a new</h2>
       <Form 
