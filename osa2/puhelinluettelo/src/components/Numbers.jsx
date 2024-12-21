@@ -1,9 +1,13 @@
-const Numbers = ({ persons }) => {
-
-// The Numbers component is a simple component that renders a list of persons and their phone numbers.
+const Numbers = ({ persons, handleDelete }) => {
+    // person are mapped and indetified by their id
   return (
     <ul>
-      {persons.map(person => <li key={person.name}>{person.name} {person.number}</li>)}
+      {persons.map(person => 
+        <li key={person.id}>
+          {person.name} {person.number}
+          <button onClick={() => handleDelete(person.id)}>delete</button>
+        </li>
+      )}
     </ul>
   )
 }
