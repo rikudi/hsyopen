@@ -3,7 +3,8 @@ import Numbers from './components/Numbers'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import personService from './services/persons'
-import Notification from './components/Notification' // Import Notification component
+import Notification from './components/Notification'
+import './App.css'
 
 const App = () => {
   const [persons, setPersons] = useState([])

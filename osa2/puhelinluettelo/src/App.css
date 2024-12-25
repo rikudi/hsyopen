@@ -1,0 +1,37 @@
+body {
+  background-color: #f0f8ff;
+  color: #000033;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  color: #000080;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 128, 0.1);
+}
+
+input, button {
+  padding: 8px;
+  margin: 5px;
+  border: 1px solid #000080;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #000080;
+  color: white;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #000066;
+}
