@@ -25,7 +25,7 @@ const App = () => {
       })
       .catch(error => {
         console.error('Error fetching data:', error)
-        alert('Failed to fetch data from server. Is json-server running?')
+        alert('Failed to fetch data from server. Please try again later.')
       })
   }, [])
 
