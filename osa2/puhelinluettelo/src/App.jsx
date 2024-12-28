@@ -47,16 +47,26 @@ const App = () => {
   // Event handler for deleting a person
   const handleDelete = (id) => {
     const person = persons.find(person => person.id === id)
-    if (window.confirm(`Delete ${person.name} ?`)) {
-      personService.remove(id)
-        .then(response => {
-          console.log('person deleted:', response)
-          setPersons(persons.filter(person => person.id !== id))
-          showNotification(`Deleted ${person.name}`, 'error') // Use 'error' type for deletion
+    if (!person) {
+      showNotification('Person not found', 'error')
+      return
+    }
+
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .remove(id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== id))
+          showNotification(`Deleted ${person.name}`, 'success')
         })
         .catch(error => {
           console.error('Error deleting person:', error)
-          showNotification('Person already deleted from the server', 'error')
+          showNotification(
+            `Information of ${person.name} has already been removed from server`, 
+            'error'
+          )
+          // Update the UI state even if server request fails
+          setPersons(persons.filter(p => p.id !== id))
         })
     }
   }
@@ -77,21 +87,22 @@ const App = () => {
 
     const personObject = {
       name: newName,
-      number: newNum,
-      id: Math.floor(Math.random() * 1000).toString()
+      number: newNum
+      // Remove the id generation - MongoDB will handle this
     }
 
     personService
       .create(personObject)
       .then(response => {
+        // response.data will contain the MongoDB document with _id
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNum('')
-        showNotification(`Added ${personObject.name}`, 'success')
+        showNotification(`Added ${response.data.name}`, 'success')
       })
       .catch(error => {
         console.error('Error adding person:', error)
-        showNotification('Failed to add person to server', 'error')
+        showNotification(error.response?.data?.error || 'Failed to add person to server', 'error')
       })
   }
 
