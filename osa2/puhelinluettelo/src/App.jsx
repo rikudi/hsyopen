@@ -6,14 +6,16 @@ import personService from './services/persons'
 import Notification from './components/Notification'
 import './App.css'
 
+// Main App component
 const App = () => {
-  const [persons, setPersons] = useState([])
-  const [newName, setNewName] = useState('')
-  const [newNum, setNewNum] = useState('')
-  const [filterText, setFilterText] = useState('')
-  const [notification, setNotification] = useState(null) // Add notification state
+  // State variables
+  const [persons, setPersons] = useState([]) // List of persons
+  const [newName, setNewName] = useState('') // New name input
+  const [newNum, setNewNum] = useState('') // New number input
+  const [filterText, setFilterText] = useState('') // Filter text input
+  const [notification, setNotification] = useState(null) // Notification message
 
-  // The useEffect hook is used to fetch the initial data from the server when the component is rendered for the first time.
+  // Fetch initial data from the server when the component is rendered for the first time
   useEffect(() => {
     console.log('fetching initial data')
     personService.getAll()
@@ -27,22 +29,23 @@ const App = () => {
       })
   }, [])
 
-
-  /* EVENT HANDLERS FOR NAME AND NUMBER INPUTS */ 
+  // Event handler for name input change
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
 
+  // Event handler for number input change
   const handleNumChange = (event) => {
     setNewNum(event.target.value)
   }
 
+  // Event handler for filter text input change
   const handleFilterChange = (event) => {
     setFilterText(event.target.value)
   }
 
-// finds person id from persons array and deletes from db if successful
-const handleDelete = (id) => {
+  // Event handler for deleting a person
+  const handleDelete = (id) => {
     const person = persons.find(person => person.id === id)
     if (window.confirm(`Delete ${person.name} ?`)) {
       personService.remove(id)
@@ -58,7 +61,7 @@ const handleDelete = (id) => {
     }
   }
 
- /* FORM HANDLER*/
+  // Event handler for form submission
   const handleSubmit = (event) => {
     event.preventDefault()
     
@@ -92,6 +95,7 @@ const handleDelete = (id) => {
       })
   }
 
+  // Function to update a person's information
   const updatePerson = (id, newPerson) => {
     personService
       .update(id, newPerson)
@@ -110,6 +114,7 @@ const handleDelete = (id) => {
       })
   }
 
+  // Function to show notification messages
   const showNotification = (message, type) => {
     setNotification({ message, type })
     setTimeout(() => {
@@ -117,14 +122,14 @@ const handleDelete = (id) => {
     }, type === 'success' ? 2000 : 5000) // 2 seconds for success, 5 seconds for error
   }
 
-
-// The personsToShow variable is used to filter the persons array based on the filterText state.
+  // Filter persons based on the filter text
   const personsToShow = filterText
     ? persons.filter(person => 
         person.name.toLowerCase().includes(filterText.toLowerCase())
       )
     : persons
 
+  // Render the component
   return (
     <div>
       <h2>Phonebook</h2>
