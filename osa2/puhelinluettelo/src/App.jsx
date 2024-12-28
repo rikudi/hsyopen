@@ -46,7 +46,7 @@ const App = () => {
 
   // Event handler for deleting a person
   const handleDelete = (id) => {
-    const person = persons.find(person => person.id === id)
+    const person = persons.find(person => person._id === id)
     if (!person) {
       showNotification('Person not found', 'error')
       return
@@ -56,7 +56,7 @@ const App = () => {
       personService
         .remove(id)
         .then(() => {
-          setPersons(persons.filter(p => p.id !== id))
+          setPersons(persons.filter(p => p._id !== id))
           showNotification(`Deleted ${person.name}`, 'success')
         })
         .catch(error => {
@@ -65,8 +65,7 @@ const App = () => {
             `Information of ${person.name} has already been removed from server`, 
             'error'
           )
-          // Update the UI state even if server request fails
-          setPersons(persons.filter(p => p.id !== id))
+          setPersons(persons.filter(p => p._id !== id))
         })
     }
   }
@@ -80,7 +79,7 @@ const App = () => {
     if (existingPerson) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const updatedPerson = { ...existingPerson, number: newNum }
-        updatePerson(existingPerson.id, updatedPerson)
+        updatePerson(existingPerson._id, updatedPerson)
       }
       return
     }
@@ -88,7 +87,6 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNum
-      // Remove the id generation - MongoDB will handle this
     }
 
     personService
@@ -112,7 +110,7 @@ const App = () => {
       .update(id, newPerson)
       .then(response => {
         setPersons(persons.map(person => 
-          person.id === id ? response.data : person
+          person._id === id ? response.data : person
         ))
         setNewName('')
         setNewNum('')
@@ -121,7 +119,7 @@ const App = () => {
       .catch(error => {
         console.error('Error updating person:', error)
         showNotification(`Information of ${newPerson.name} has already been removed from server`, 'error')
-        setPersons(persons.filter(person => person.id !== id))
+        setPersons(persons.filter(person => person._id !== id))
       })
   }
 
