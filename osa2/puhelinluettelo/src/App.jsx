@@ -46,17 +46,19 @@ const App = () => {
 
   // Event handler for deleting a person
   const handleDelete = (id) => {
-    const person = persons.find(person => person._id === id)
+    console.log('delete id:', id)
+    const person = persons.find(person => person.id === id)
+    console.log('person:', person)
     if (!person) {
       showNotification('Person not found', 'error')
       return
     }
-
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
         .remove(id)
         .then(() => {
-          setPersons(persons.filter(p => p._id !== id))
+          console.log('person deleted:', id)
+          setPersons(persons.filter(p => p.id !== id))
           showNotification(`Deleted ${person.name}`, 'success')
         })
         .catch(error => {
@@ -65,7 +67,7 @@ const App = () => {
             `Information of ${person.name} has already been removed from server`, 
             'error'
           )
-          setPersons(persons.filter(p => p._id !== id))
+          setPersons(persons.filter(p => p.id !== id))
         })
     }
   }
@@ -79,7 +81,7 @@ const App = () => {
     if (existingPerson) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const updatedPerson = { ...existingPerson, number: newNum }
-        updatePerson(existingPerson._id, updatedPerson)
+        updatePerson(existingPerson.id, updatedPerson)
       }
       return
     }
@@ -92,7 +94,6 @@ const App = () => {
     personService
       .create(personObject)
       .then(response => {
-        // response.data will contain the MongoDB document with _id
         setPersons(persons.concat(response.data))
         setNewName('')
         setNewNum('')
@@ -110,7 +111,7 @@ const App = () => {
       .update(id, newPerson)
       .then(response => {
         setPersons(persons.map(person => 
-          person._id === id ? response.data : person
+          person.id === id ? response.data : person
         ))
         setNewName('')
         setNewNum('')
@@ -118,8 +119,8 @@ const App = () => {
       })
       .catch(error => {
         console.error('Error updating person:', error)
-        showNotification(`Information of ${newPerson.name} has already been removed from server`, 'error')
-        setPersons(persons.filter(person => person._id !== id))
+        showNotification(error.response?.data?.error || `Information of ${newPerson.name} has already been removed from server`, 'error')
+        setPersons(persons.filter(person => person.id !== id))
       })
   }
 
